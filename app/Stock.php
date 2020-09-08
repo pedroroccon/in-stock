@@ -4,6 +4,10 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str;
+use App\Clients\BestBuy;
+use App\Clients\Target;
+use App\Clients\ClientException;
 
 class Stock extends Model
 {
@@ -28,26 +32,17 @@ class Stock extends Model
 
     public function track()
     {
-        // We need different strategies to get the products 
-        // price and availability from each retailers. Later 
-        // we need to extract this to a Strategy Pattern, 
-        // avoiding the use of "ifs" in this class.
-        if ($this->retailer->name === 'Best Buy') {
+        $class = 'App\\Clients\\' . Str::studly($this->retailer->name);
 
-            // Hit an API endpoint for the associated retailer
-            // Fetch the up-to-date details for the item.
-            $results = Http::get('http://foo.test')->json();
-
-            // And then, refresh the current stock recrod.
-            
-            // Given we are could be working with multiple APIs, 
-            // we should normalize the returns later to avoid 
-            // inconsistencies in database.
-            $this->update([
-                'in_stock' => $results['available'], 
-                'price' => $results['price']
-            ]);
+        if ( ! class_exists($class)) {
+            throw new ClientException('Client not found for ' . $this->retailer->name);
         }
 
+        $status = (new $class)->checkAvailability($this);
+
+        $this->update([
+            'in_stock' => $status->available, 
+            'price' => $status->price
+        ]);
     }
 }
