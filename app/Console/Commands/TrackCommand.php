@@ -42,5 +42,7 @@ class TrackCommand extends Command
         // we should use another approach, like
         // each() or chunk() methods. This will splite
         Product::all()->each->track();
+
+        $this->info('Completed!');
     }
 }

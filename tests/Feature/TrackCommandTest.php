@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Product;
 use App\Retailer;
 use App\Stock;
+use RetailerWithProductSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Http;
@@ -19,20 +20,8 @@ class TrackCommandTest extends TestCase
     {
         // Given
         // I have a product with stock.
-        $switch = Product::create(['name' => 'Nintendo Switch']);
-        $bestBuy = Retailer::create(['name' => 'Best Buy']);
-
-        $this->assertFalse($switch->inStock());
-
-        $stock = new Stock([
-            'price' => 1000, 
-            'url' => 'http://foo.bar', 
-            'sku' => '45684', 
-            'in_stock' => false
-        ]);
-
-        $bestBuy->addStock($switch, $stock);
-        $this->assertFalse($stock->fresh()->in_stock);
+        $this->seed(RetailerWithProductSeeder::class);
+        $this->assertFalse(Product::first()->inStock());
 
         // When
         // I trigger the php artisan track command.
@@ -44,11 +33,12 @@ class TrackCommandTest extends TestCase
                 'price' => 29900, 
             ];
         }); // Fake the Http endpoint.
-        $this->artisan('instock:track');
+        $this->artisan('instock:track')
+            ->expectsOutput('Completed!');
 
         // Then
         // The stock details should be refreshed.
-        $this->assertTrue($stock->fresh()->in_stock);
+        $this->assertTrue(Product::first()->inStock());
 
     }
 }

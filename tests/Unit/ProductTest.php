@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Unit;
 
 use App\Product;
 use App\Retailer;
@@ -8,7 +8,7 @@ use App\Stock;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class ExampleTest extends TestCase
+class ProductTest extends TestCase
 {
     use RefreshDatabase;
 
