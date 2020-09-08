@@ -15,6 +15,11 @@ class Product extends Model
     	return $this->hasMany(Stock::class);
     }
 
+    public function track()
+    {
+        $this->stock->each->track();
+    }
+
     public function inStock()
     {
         // You can use magic methods too: return $this->stock()->whereInStock(true)->exists();
