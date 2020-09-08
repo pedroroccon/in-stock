@@ -29,15 +29,32 @@ class Stock extends Model
         return $this->belongsTo(Retailer::class);
     }
 
+    public function history()
+    {
+        return $this->hasMany(History::class);
+    }
+
     public function track()
     {
        $status = $this->retailer
             ->client()
             ->checkAvailability($this);
-
+        
         $this->update([
             'in_stock' => $status->available, 
             'price' => $status->price
+        ]);
+
+        $this->recordHistory();
+    }
+
+    private function recordHistory()
+    {
+        // We can use model observers instead.
+        $this->history()->create([
+            'price' => $this->price, 
+            'in_stock' => $this->in_stock, 
+            'product_id' => $this->product_id, 
         ]);
     }
 }

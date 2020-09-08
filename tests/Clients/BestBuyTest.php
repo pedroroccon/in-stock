@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests;
+namespace Tests\Clients;
 
 use App\Stock;
 use App\Clients\BestBuy;
