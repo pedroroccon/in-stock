@@ -5,6 +5,8 @@ namespace Tests\Feature;
 use App\Product;
 use App\Retailer;
 use App\Stock;
+use App\Clients\StockStatus;
+use Facades\App\Clients\ClientFactory;
 use RetailerWithProductSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -27,12 +29,8 @@ class TrackCommandTest extends TestCase
         // I trigger the php artisan track command.
         // And assuming the stock is available.
 
-        Http::fake(function() {
-            return [
-                'available' => true, 
-                'price' => 29900, 
-            ];
-        }); // Fake the Http endpoint.
+        ClientFactory::shouldReceive('make->checkAvailability')->andReturn(new StockStatus($available = true, $price = 29900));
+
         $this->artisan('instock:track')
             ->expectsOutput('Completed!');
 
