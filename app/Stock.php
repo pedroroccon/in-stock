@@ -29,12 +29,12 @@ class Stock extends Model
         return $this->belongsTo(Retailer::class);
     }
 
-    public function history()
+    public function product()
     {
-        return $this->hasMany(History::class);
+        return $this->belongsTo(Product::class);
     }
 
-    public function track()
+    public function track($callback = null)
     {
        $status = $this->retailer
             ->client()
@@ -45,16 +45,14 @@ class Stock extends Model
             'price' => $status->price
         ]);
 
-        $this->recordHistory();
+        // If there is a callback, then we should
+        // pass it and do whatever we want.
+        $callback && $callback($this);
+
+        // Instead of using the callback, we 
+        // could use events/listeners instead. But for now 
+        // let's keep it simple.
     }
 
-    private function recordHistory()
-    {
-        // We can use model observers instead.
-        $this->history()->create([
-            'price' => $this->price, 
-            'in_stock' => $this->in_stock, 
-            'product_id' => $this->product_id, 
-        ]);
-    }
+
 }
