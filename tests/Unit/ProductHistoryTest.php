@@ -2,7 +2,6 @@
 
 namespace Tests\Unit;
 
-use App\History;
 use App\Product;
 use App\Stock;
 use Tests\TestCase;
