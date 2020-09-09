@@ -22,25 +22,13 @@ class Product extends Model
 
     public function track()
     {
-        $this->stock->each->track(function($stock) {
-            return $this->recordHistory($stock);
-        });
+        $this->stock->each->track();
     }
 
     public function inStock()
     {
         // You can use magic methods too: return $this->stock()->whereInStock(true)->exists();
     	return $this->stock()->where('in_stock', true)->exists();
-    }
-
-    public function recordHistory(Stock $stock)
-    {
-        // We can use model observers instead.
-        $this->history()->create([
-            'price' => $stock->price, 
-            'in_stock' => $stock->in_stock, 
-            'stock_id' => $stock->id, 
-        ]);
     }
 
 }

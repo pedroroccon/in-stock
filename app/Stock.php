@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 use App\Clients\BestBuy;
 use App\Clients\Target;
 use App\Events\NowInStock;
+use App\UseCases\TrackStock;
 
 class Stock extends Model
 {
@@ -35,29 +36,11 @@ class Stock extends Model
         return $this->belongsTo(Product::class);
     }
 
-    public function track($callback = null)
+    public function track()
     {
-       $status = $this->retailer
-            ->client()
-            ->checkAvailability($this);
-
-        
-        if ( ! $this->in_stock && $status->available) {
-            event(new NowInStock($this));
-        }
-        
-        $this->update([
-            'in_stock' => $status->available, 
-            'price' => $status->price
-        ]);
-
-        // If there is a callback, then we should
-        // pass it and do whatever we want.
-        $callback && $callback($this);
-
-        // Instead of using the callback, we 
-        // could use events/listeners instead. But for now 
-        // let's keep it simple.
+        // We are using UseCases here, but we 
+        // can handle that like Laravel's jobs.
+        TrackStock::dispatch($this);
     }
 
 

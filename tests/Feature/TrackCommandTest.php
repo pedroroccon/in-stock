@@ -54,33 +54,4 @@ class TrackCommandTest extends TestCase
         $this->assertTrue(Product::first()->inStock());
 
     }
-
-    /** @test */
-    function it_notifies_the_user_when_the_stock_is_now_available()
-    {
-        
-        // Given I have a user
-        // And also a product is out of stock
-        $this->mockClientRequest();
-
-        // If I update the stock and now it's available
-        $this->artisan('instock:track');
-
-        // then the user should be notified.
-        Notification::assertSentTo(User::first(), ImportantStockUpdate::class);
-    }
-
-    /** @test */
-    function it_does_not_notifies_the_user_when_the_stock_remains_unavailable()
-    {
-        // Given I have a user
-        // And also a product is out of stock
-        $this->mockClientRequest(false);
-
-        // If I update the stock and now it still unavailable
-        $this->artisan('instock:track');
-
-        // then the user should not be notified
-        Notification::assertNothingSent();
-    }
 }
