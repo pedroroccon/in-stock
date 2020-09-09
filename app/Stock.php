@@ -13,17 +13,17 @@ use App\UseCases\TrackStock;
 class Stock extends Model
 {
 
-	protected $table = 'stock';
+    protected $table = 'stock';
 
     protected $fillable = [
-    	'price', 
-		'url', 
-		'sku', 
-		'in_stock', 
+        'price', 
+        'url', 
+        'sku', 
+        'in_stock', 
     ];
 
     protected $casts = [
-    	'in_stock' => 'boolean'
+        'in_stock' => 'boolean'
     ];
 
     public function retailer()

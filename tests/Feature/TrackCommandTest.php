@@ -46,8 +46,7 @@ class TrackCommandTest extends TestCase
         // And assuming the stock is available.
         $this->mockClientRequest();
 
-        $this->artisan('instock:track')
-            ->expectsOutput('Completed!');
+        $this->artisan('instock:track');
 
         // Then
         // The stock details should be refreshed.

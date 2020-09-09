@@ -38,11 +38,37 @@ class TrackCommand extends Command
      */
     public function handle()
     {
-        // When working with a thousand of products, 
-        // we should use another approach, like
-        // each() or chunk() methods. This will splite
-        Product::all()->each->track();
+        // Get all products
+        $products = Product::all();
 
-        $this->info('Completed!');
+       // Start a progress bar
+       $this->output->progressStart($products->count());
+
+        $products->each(function ($product) {
+            // Loop through the products and increment progress bar
+            $product->track();
+            $this->output->progressAdvance();
+        });
+
+        // Finish the progress bar and show the results
+        $this->showResults($products);
+    }
+
+    protected function showResults($products) : void
+    {
+        $this->output->progressFinish();
+
+        $data = Product::leftJoin('stock', 'stock.product_id', '=', 'products.id')
+            ->get($this->columns());
+
+        $this->table(
+            array_map('ucwords', $this->columns()), 
+            $data
+        );
+    }
+
+    protected function columns() : array
+    {
+        return ['name', 'price', 'url', 'in_stock'];
     }
 }
