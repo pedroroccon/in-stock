@@ -22,8 +22,7 @@ class ProductHistoryTest extends TestCase
         // Given I have stock at a retailer
         $this->seed(RetailerWithProductSeeder::class);
 
-        ClientFactory::shouldReceive('make->checkAvailability')
-            ->andReturn(new StockStatus($available = true, $price = 9990));
+        $this->mockClientRequest($available = true, $price = 9990);
 
         $product = tap(Product::first(), function ($product) {
             $this->assertCount(0, $product->history);

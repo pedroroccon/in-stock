@@ -16,3 +16,10 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+// We can preview the e-mail uncommenting 
+// the code below
+// Route::get('preview-mail', function() {
+//     $user = factory(\App\User::class)->create();
+//     return (new \App\Notifications\ImportantStockUpdate(\App\Stock::first()))->toMail($user);
+// });

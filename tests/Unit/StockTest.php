@@ -48,7 +48,7 @@ class StockTest extends TestCase
 
 		// You can add variables to the arguments, so after 6 months 
 		// you'll remember what each argument is :)
-		ClientFactory::shouldReceive('make->checkAvailability')->andReturn(new StockStatus($available = true, $price = 9900));
+		$this->mockClientRequest($available = true, $price = 9900);
 
 		$stock = tap(Stock::first())->track();
 		$this->assertTrue($stock->in_stock);
